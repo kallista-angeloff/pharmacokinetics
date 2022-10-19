@@ -3,7 +3,6 @@
 #
 
 from logging import raiseExceptions
-from pickle import FALSE
 import numpy as np
 
 
