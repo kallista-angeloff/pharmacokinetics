@@ -41,7 +41,12 @@ def solution(model_sol, *args):
     -------
     """
     
-    # create subplot for 
+    # check inputs
+    for model in [model_sol, *args]:
+        if not isinstance(model_sol, dict):
+            raise TypeError('Model data output for plotting must be a dictionary')
+    
+    # create subplot
     f, (a0,a1) = plt.subplots(2, 1 , gridspec_kw={'height_ratios': [3, 1]})
     for model in [model_sol, *args]:    # calls plot_drug function
         plot_drug(model, f)
@@ -49,10 +54,12 @@ def solution(model_sol, *args):
      # adding visualisation elements
     f.legend()
     f.suptitle('Drug amount in different systems')
-    a0.set_ylabel('drug amount in compartments [ng]')
-    a1.set_xlabel('drug dosage amount [ng]')
+    a0.set_ylabel('compartment drug amoount [ng]')
+    a1.set_ylabel('drug dosage amount [ng]')
     a1.set_xlabel('time [h]')
-    f.tight_layout()
+    a0.set_xticks([])
+    f.subplots_adjust(hspace=0)
+    f.show()
 
 def plot_drug(model, f):
     """
@@ -64,13 +71,19 @@ def plot_drug(model, f):
     ------
     model (dict): The model results that are to be plotted by the function 
     
-    fig (figure): The figure that the data will be plotted on   
+    fig (figure, 2 axes): The figure that the data will be plotted on   
 
     Outputs
     -------
     fig (figure): (same as fig input)
 
     """
+
+    # check inputs
+    if not isinstance(model, dict):
+        raise TypeError('Model data output for plotting must be a dictionary')
+    if not isinstance(f, plt.Figure) or len(f.axes) != 2:
+        raise ValueError('Second argument must be a figure with 2 axes')
 
     # plots the drug concentration for each compartment 
     for comp in model['solution']:
