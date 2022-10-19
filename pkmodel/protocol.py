@@ -1,7 +1,3 @@
-#
-# Protocol class
-#
-
 from logging import raiseExceptions
 import numpy as np
 
@@ -19,9 +15,11 @@ def type_of_dosis():
     dosis_comp: bool, is a dosis compartment used?
     """
 
-    dosis_comp = input('Should a dosis compartment be used?')
-    if type(dosis_comp) != bool:
-        raiseExceptions('Please use a boolean, either 0 or 1.')
+    print('Should a dosis compartment be used?')
+    answer = input('y/n?')
+    if answer not in ['y', 'n']:
+        raise TypeError('Answer needs to be y or n.')
+    dosis_comp = (answer == 'y')  #convert input into boolean,
     return dosis_comp
 
 
@@ -37,7 +35,12 @@ def number_of_compartments():
     ------
     no_comps: int, number of compartments
     """
-    no_comps = 1
+
+    print('How many compartments including the central one should there be?')
+    no_comps = int(input('Enter an integer between 1 and 3'))
+    if (type(no_comps) != int) or (no_comps < 1) or (no_comps > 3):
+        raise TypeError('Input needs to be an integer between 1 and 3.')
+
     return no_comps
 
 
