@@ -6,6 +6,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+class Solution:
+    """A Pharmokinetic (PK) model solution
+
+    Parameters
+    ----------
+
+    value: numeric, optional
+        an example paramter
+
+    """
+    def __init__(self, value=44):
+        self.value = value
 
 def solution(model_sol, *args):
     """ 
@@ -63,17 +75,4 @@ def plot_drug(model,f):
     f.axes[1].plot(model['t'],model['dose'])
     return f
 
-
-class Solution:
-    """A Pharmokinetic (PK) model solution
-
-    Parameters
-    ----------
-
-    value: numeric, optional
-        an example paramter
-
-    """
-    def __init__(self, value=44):
-        self.value = value
 
