@@ -2,22 +2,9 @@
 # Protocol class
 #
 
+from logging import raiseExceptions
 from pickle import FALSE
 import numpy as np
-
-
-class Protocol:  # do we need a class for this?
-    """A Pharmokinetic (PK) protocol
-
-    Parameters
-    ----------
-
-    value: numeric, optional
-        an example paramter
-
-    """
-    def __init__(self, value=43):
-        self.value = value
 
 
 def type_of_dosis():
@@ -33,7 +20,9 @@ def type_of_dosis():
     dosis_comp: bool, is a dosis compartment used?
     """
 
-    dosis_comp = FALSE
+    dosis_comp = input('Should a dosis compartment be used?')
+    if type(dosis_comp) != bool:
+        raiseExceptions('Please use a boolean, either 0 or 1.')
     return dosis_comp
 
 
