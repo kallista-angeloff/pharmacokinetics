@@ -1,10 +1,6 @@
-import matplotlib.pylab as plt
 import numpy as np
 import scipy.integrate
 
-
-def dose(t, X):
-    return X
 
 def rhs_iv_one_compartment(t, y, model_input): 
     '''Defines a one-compartment IV model.
@@ -30,7 +26,7 @@ def rhs_iv_one_compartment(t, y, model_input):
         `dqc_dt` is the rate of change of the drug in the main compartment
         over time, d(q_c)/dt.
     '''
-    
+
     q_c = y[0]
     dqc_dt = dose(t, model_input['X']) - q_c/model_input['V_c'] * model_input['CL']
     return dqc_dt
