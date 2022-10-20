@@ -12,4 +12,3 @@ class ProtocolTest(unittest.TestCase):
         """
         model = pk.Protocol()
         self.assertEqual(model.value, 43)
-
