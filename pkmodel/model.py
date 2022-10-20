@@ -32,10 +32,8 @@ def rhs_iv_one_compartment(t, dose, model_input):
         over time, d(q_c)/dt.
     '''
     
-    model_input['q_c'] = y
-    # dqc_dt = dose(t, X) - q_c / V_c * CL 
-    # dqc_dt = X - q_c / V_c * CL # substitutes in X for dose
-    dqc_dt = dose(t, model_input['X']) - model_input['q_c'] / model_input['V_c'] * model_input['CL']
+    q_c = y
+    dqc_dt = dose(t, model_input['X']) - q_c/model_input['V_c'] * model_input['CL']
 
     return dqc_dt
 
@@ -64,11 +62,8 @@ def iv_one_compartment(t_eval, y0, model_input):
 
     '''
 
-    args = [
-        model_input['X'], model_input['q_c'], model_input['V_c'], model_input['CL']
-    ]
     sol_iv_one_compartment = scipy.integrate.solve_ivp(
-        fun=lambda t, y: rhs_iv_one_compartment(t, y, *args),
+        fun=lambda t, y: rhs_iv_one_compartment(t, y, model_input),
         t_span=[t_eval[0], t_eval[-1]],
         y0=y0, t_eval=t_eval
     )
@@ -132,9 +127,6 @@ def iv_two_compartments(t_eval, y0, model_input):
     sol_iv_two_compartments : 
     '''
     
-    # args = [
-    #     model_input['Q_p1'], model_input['V_c'], model_input['V_p1'], model_input['CL'], model_input['X']
-    # ]
     sol_iv_two_compartments = scipy.integrate.solve_ivp(
         fun=lambda t, y: rhs_iv_two_compartments(t, y, model_input),
         t_span=[t_eval[0], t_eval[-1]],
@@ -145,7 +137,7 @@ def iv_two_compartments(t_eval, y0, model_input):
 
 # --- Subcutaneous ------------------------------
 
-def rhs_subcutaneous(k_a, Q_p1, V_c, V_p1, CL, X):
+def rhs_subcutaneous(t, y, model_input):
     '''Defines a subcutaneous injection delivery model with an initial 
     dosing compartment and an additional peripheral compartment.
 
@@ -172,10 +164,10 @@ def rhs_subcutaneous(k_a, Q_p1, V_c, V_p1, CL, X):
     '''
     q_0, q_c, q_p1 = y
     
-    transition = Q_p1 * (q_c / V_c - q_p1 / V_p1)
+    transition = model_input['Q_p1'] * q_c/model_input['V_c'] - q_p1/model_input['V_p1'])
     
-    dq0_dt = dose(t, X) - k_a * q_0
-    dqc_dt = k_a * q_0 - q_c / V_c * CL - transition
+    dq0_dt = dose(t, X) - model_input['k_a'] * q_0
+    dqc_dt = model_input['k_a']*q_0 - q_c/model_input['V_c']*model_input['CL'] - transition
     dqp1_dt = transition
 
     return [dq0_dt, dqc_dt, dqp1_dt]
@@ -201,12 +193,9 @@ def subcutaneous(model_input, t_eval, y0):
     sol_subcutaneous : ###
     
     '''
-    args = [
-        model_input['k_a'], model_input['Q_p1'], model_input['V_c'], model_input['V_p1'], 
-        model_input['CL'], model_input['X']
-    ]
+
     sol_subcutaneous = scipy.integrate.solve_ivp(
-        fun=lambda t, y: rhs_subcutaneous(t, y, *args),
+        fun=lambda t, y: rhs_subcutaneous(t, y, model_input),
         t_span=[t_eval[0], t_eval[-1]],
         y0=y0, t_eval=t_eval
     )
