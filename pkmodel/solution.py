@@ -1,23 +1,10 @@
 #
-# Solution class
+# Solution.py functions
 #
 
-## Packages
+# Packages
 import numpy as np
 import matplotlib.pyplot as plt
-
-class Solution:
-    """A Pharmokinetic (PK) model solution
-
-    Parameters
-    ----------
-
-    value: numeric, optional
-        an example paramter
-
-    """
-    def __init__(self, value=44):
-        self.value = value
 
 def solution(model_sol, *args):
     """ 
@@ -86,9 +73,9 @@ def plot_drug(model, f):
         raise ValueError('Second argument must be a figure with 2 axes')
 
     # plots the drug concentration for each compartment 
-    for comp in model['solution']:
-        f.axes[0].plot(model['t'], comp)
-    f.axes[1].plot(model['t'], model['dose'])  # plots drug dosage
+    for comp in model.y:
+        f.axes[0].plot(model.t, comp)
+    f.axes[1].plot(model.t, model.dose)  # plots drug dosage
 
     return f
 

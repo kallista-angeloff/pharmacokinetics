@@ -44,30 +44,6 @@ def number_of_compartments():
 
     return no_comps
 
-
-def set_up_dict(no_comps, dosis_comp):
-    """Creates the dictionary to save solutions for the model
-
-    Input
-    ------
-    no_comps: int, number of compartments including the central
-                but excluding a potential dosis compartment
-    dosis_comp: bool, whether there is a dosis compartment
-
-
-    Output
-    -------
-    data_dict: dict, dictionary of solutions
-
-    """
-    if dosis_comp:
-        no_solutions = no_comps + 1
-    else:
-        no_solutions = no_comps
-    data_dict = {i: None for i in range(no_solutions)}
-    return data_dict
-
-
 def shape_of_dosis():
     """Function in which the user can set whether the dose is given in one spike
     or as a continuous dosis
