@@ -6,7 +6,7 @@ import scipy.integrate
 def dose(t, X):
     return X
 
-def rhs_iv_one_compartment(t, dose, model_input): 
+def rhs_iv_one_compartment(t, y, model_input): 
     '''Defines a one-compartment IV model.
     
     Parameters
@@ -164,16 +164,16 @@ def rhs_subcutaneous(t, y, model_input):
     '''
     q_0, q_c, q_p1 = y
     
-    transition = model_input['Q_p1'] * q_c/model_input['V_c'] - q_p1/model_input['V_p1'])
+    transition = model_input['Q_p1'] * q_c/model_input['V_c'] - q_p1/model_input['V_p1']
     
-    dq0_dt = dose(t, X) - model_input['k_a'] * q_0
+    dq0_dt = dose(t, model_input['X']) - model_input['k_a'] * q_0
     dqc_dt = model_input['k_a']*q_0 - q_c/model_input['V_c']*model_input['CL'] - transition
     dqp1_dt = transition
 
     return [dq0_dt, dqc_dt, dqp1_dt]
 
 
-def subcutaneous(model_input, t_eval, y0):
+def subcutaneous(t_eval, y0, model_input):
     '''Solves the differential equations involved in subcutaneous dosing
     (as described in rhs_subcutaneous) using scipy.integrate.solve_ivp.
 
@@ -206,7 +206,7 @@ def subcutaneous(model_input, t_eval, y0):
 # -----------------------------
 
 t_eval = np.linspace(0, 1, 1000)
-y0 = np.array([0.0, 0.0])
+y0 = np.array([0.0, 0.0, 0.0]) # initial conditions - need variable number
 model_input = {
     'name': 'test for output',
     'Q_p1': 2.0,
@@ -214,10 +214,11 @@ model_input = {
     'V_p1': 1.0,
     'CL': 1.0,
     'X': 1.0,
+    'k_a': 2.0
 }
 
 fig = plt.figure()
-sol = iv_two_compartments(t_eval, y0, model_input)
+sol = iv_one_compartment(t_eval, y0, model_input)
 
 
 plt.plot(sol.t, sol.y[0, :], label=model_input['name'] + '- q_c')
