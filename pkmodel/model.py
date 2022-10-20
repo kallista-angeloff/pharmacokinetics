@@ -42,13 +42,13 @@ def iv_one_compartment(t_eval, y0, model_input):
     Parameters
     ----------
     t_eval : array
-        `t_eval` is an array containing the timespan over which to 
+        `t_eval` is an array containing the timespan over which to
         evaluate the differential equations.
     y0 : array
-        `y0` is an array containing the initial conditions for the 
+        `y0` is an array containing the initial conditions for the
         differential equations.
     model_input : dict
-        `model_input` is a dictionary containing the following: 
+        `model_input` is a dictionary containing the following:
         V_c : float
             `V_c` is the volume in mL of the main compartment.
         CL: float
@@ -78,11 +78,11 @@ def iv_one_compartment(t_eval, y0, model_input):
 
 def rhs_iv_two_compartments(t, y, model_input):
     '''Defines a two-compartment IV model (main and peripheral compartments).
-    
+
     Parameters
     ----------
     Q_p1 : float
-        `Q_p1` is the exchange rate in mL/hr between the main and peripheral 
+        `Q_p1` is the exchange rate in mL/hr between the main and peripheral
         compartments.
     V_c : float
         `V_c` is the volume in mL of the main compartment.
@@ -92,7 +92,7 @@ def rhs_iv_two_compartments(t, y, model_input):
         `CL` is the clearance rate in mL/hr of the main compartment.
     X : float
         `X` is the dose in ng of the drug.
-    
+
     Return
     ----------
     dqc_dt : float
@@ -104,10 +104,9 @@ def rhs_iv_two_compartments(t, y, model_input):
     '''
 
     q_c, q_p1 = y
-    transition = model_input['Q_p1'] * q_c/model_input['V_c']
-                 - q_p1/model_input['V_p1']
+    transition = model_input['Q_p1'] * q_c/model_input['V_c'] - q_p1/model_input['V_p1']
 
-    dose = create_dosis_function(model_input['dose_shape'], 
+    dose = create_dosis_function(model_input['dose_shape'],
                                  model_input['dose_spikes'],
                                  model_input['dose_strength'])
     dqc_dt = dose(t) - q_c/model_input['V_c']*model_input['CL'] - transition
@@ -115,10 +114,11 @@ def rhs_iv_two_compartments(t, y, model_input):
 
     return [dqc_dt, dqp1_dt]
 
+
 def iv_two_compartments(t_eval, y0, model_input):
-    '''Solves the differential equations of a two-compartment IV dosing model (as 
+    '''Solves the differential equations of a two-compartment IV dosing model (as
     described in rhs_iv_two_compartments) using scipy.integrate.solve_ivp.
-    
+
     Parameters
     ----------
     model_input : dict
@@ -151,7 +151,7 @@ def iv_two_compartments(t_eval, y0, model_input):
 # --- Subcutaneous ------------------------------
 
 def rhs_subcutaneous(t, y, model_input):
-    '''Defines a subcutaneous injection delivery model with an initial 
+    '''Defines a subcutaneous injection delivery model with an initial    
     dosing compartment and an additional peripheral compartment.
 
     Parameters
@@ -177,6 +177,9 @@ def rhs_subcutaneous(t, y, model_input):
     '''
     q_0, q_c, q_p1 = y
     transition = model_input['Q_p1'] * q_c/model_input['V_c'] - q_p1/model_input['V_p1']
+    dose = create_dosis_function(model_input['dose_shape'],
+                                 model_input['dose_spikes'],
+                                 model_input['dose_strength'])
     dq0_dt = dose(t, model_input['X']) - model_input['k_a'] * q_0
     dqc_dt = model_input['k_a']*q_0 - q_c/model_input['V_c']*model_input['CL'] - transition
     dqp1_dt = transition
