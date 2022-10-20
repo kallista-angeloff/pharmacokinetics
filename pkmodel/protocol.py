@@ -1,4 +1,5 @@
-from logging import raiseExceptions
+# from logging import raiseExceptions
+# from typing import Type
 import numpy as np
 
 
@@ -19,7 +20,7 @@ def type_of_dosis():
     answer = input('y/n?')
     if answer not in ['y', 'n']:
         raise TypeError('Answer needs to be y or n.')
-    dosis_comp = (answer == 'y')  #convert input into boolean,
+    dosis_comp = (answer == 'y')  # convert input into boolean,
     return dosis_comp
 
 
@@ -45,8 +46,7 @@ def number_of_compartments():
 
 
 def set_up_dict(no_comps, dosis_comp):
-    """Creates the dictionary to save the dosis and
-    solutions for the model
+    """Creates the dictionary to save solutions for the model
 
     Input
     ------
@@ -57,15 +57,14 @@ def set_up_dict(no_comps, dosis_comp):
 
     Output
     -------
-    data_dict: dict, dictionary of dosis and solutions
+    data_dict: dict, dictionary of solutions
 
     """
-    ndt = 1000  #number of time steps
     if dosis_comp:
         no_solutions = no_comps + 1
     else:
         no_solutions = no_comps
-    data_dict = {'solution': np.zeros((no_solutions, ndt))}
+    data_dict = {i: None for i in range(no_solutions)}
     return data_dict
 
 
@@ -81,7 +80,14 @@ def shape_of_dosis():
     ------
     shape: bool, True for spikes, False for continuous
     """
-    shape = 0
+    print('Should a contnuous dosis be used or a spiked dosis?')
+    answer = input('y/n?')
+    if answer == 'y':
+        shape = 1
+    elif answer == 'n':
+        shape = 0
+    else:
+        raise TypeError('Answer needs to be either y or n.')
     return shape
 
 
@@ -97,7 +103,8 @@ def number_of_spikes(shape):
     ------
     no_spikes: int, number of spikes in dosis
     """
-    no_spikes = None
+    print('How many spikes should there be in the dosage?')
+    no_spikes = int(input('Enter an integer between 1 and 10.'))
     return no_spikes
 
 
@@ -112,19 +119,63 @@ def dosage():
     ------
     dose: float, dose in ng
     """
-    dose = 10
+    print('What should the amount of dosis be in ng?')
+    dose = float(input('Type a number larger than 0.'))
     return dose
 
 
-def create_dosis_function(shape, no_spikes, data_dict):
+def create_dosis_function(t, shape, no_spikes, strength):
     """Function takes inputs about dosis and creates an array
     for the dose in time
 
     Input
     -----
+    t: array, time steps
+    shape: bool, whether we have a continuous dosis
+    strength: float, strength of the dosis
 
     Output
     ------
-    data_dict: dict, dictionary with dosis and solutions
+    dosis: func, function for dosis in time
     """
-    return data_dict
+
+    dt = 100  # time difference between spikes
+    epsilon = dt/100
+    times = np.arange(no_spikes)*dt
+
+    def dosis(t):
+        if t < times[0]:
+            t = 0
+        elif t > times[-1]:
+            t = 0
+        elif (t > times[-1]) and (t <= times[-1]+epsilon):
+            t = 1
+        else:
+            for it in range(0, no_spikes-1):
+                if t > times[it] and (t <= times[it]+epsilon):
+                    t = 1
+                elif (t > times[it]+epsilon) and (t < times[it+1]):
+                    t = 0
+        return t * strength
+
+    return dosis
+
+
+def set_model_args():
+    """Function to set the model arguments like
+    compartment volume
+
+    Output
+    ------
+    model_args: dict, values of model arguments
+    """
+
+    model_args = {
+        'name': 'model1',
+        'Q_p1': 1.0,
+        'V_c': 1.0,
+        'V_p1': 1.0,
+        'CL': 1.0,
+        'X': 1.0,
+    }
+    return model_args
