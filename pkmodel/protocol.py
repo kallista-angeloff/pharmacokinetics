@@ -100,7 +100,7 @@ def dosage():
     return dose
 
 
-def create_dosis_function(t, shape, no_spikes, strength):
+def create_dosis_function(shape, no_spikes, strength):
     """Function takes inputs about dosis and creates an array
     for the dose in time
 
