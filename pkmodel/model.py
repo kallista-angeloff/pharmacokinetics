@@ -3,18 +3,28 @@ import numpy as np
 import scipy.integrate
 
 
-def rhs_iv_one_compartment(t, Q_p1, V_c, V_p1, CL, X): #add dose function as an argument
+def dose(t, X):
+    return X
+
+def rhs_iv_one_compartment(t, dose, model_input): 
     '''Defines a one-compartment IV model.
     
     Parameters
     ----------
-    V_c : float
-        `V_c` is the volume in mL of the main compartment.
-    CL: float
-        `CL` is the clearance rate in mL/hr of the main compartment.
+    model_input : dict
+        `model_input` is a dictionary containing the following:
+        V_c : float
+            `V_c` is the volume in mL of the main compartment.
+        CL: float
+            `CL` is the clearance rate in mL/hr of the main compartment.
+        X : float
+            `X` is the dose in ng of the drug.
+    dose : function
+        `dose` is a function that takes two floats, t and X, representing
+        the dosing protocol over time, and returns ... ?
+    t : array
     X : float
-        `X` is the dose in ng of the drug.
-    
+
     Return
     ----------
     dqc_dt : float
@@ -22,19 +32,24 @@ def rhs_iv_one_compartment(t, Q_p1, V_c, V_p1, CL, X): #add dose function as an 
         over time, d(q_c)/dt.
     '''
     
+    model_input['q_c'] = y
     # dqc_dt = dose(t, X) - q_c / V_c * CL 
-    dqc_dt = X - q_c / V_c * CL 
+    # dqc_dt = X - q_c / V_c * CL # substitutes in X for dose
+    dqc_dt = dose(t, model_input['X']) - model_input['q_c'] / model_input['V_c'] * model_input['CL']
 
     return dqc_dt
 
-def iv_one_compartment(V_c, CL, X):
+def iv_one_compartment(t_eval, y0, model_input):
     '''Solves the differential equations of a one-compartment IV dosing model (as 
     described in rhs_iv_one_compartment) using scipy.integrate.solve_ivp.
     
     Parameters
     ----------
-    model_args : dict
-        `model_args` is a dictionary containing the following: ### 
+    model_input : dict
+        `model_input` is a dictionary containing the following: 
+
+
+
     t_eval : array
         `t_eval` is an array containing the timespan over which to 
         evaluate the differential equation.
@@ -44,11 +59,13 @@ def iv_one_compartment(V_c, CL, X):
 
     Return
     ----------
-    sol_iv_one_compartment : ###
+    sol_iv_one_compartment : 
+
+
     '''
 
     args = [
-        model_args['Q_p1'], model_args['V_c'], model_args['V_p1'], model_args['CL'], model_args['X']
+        model_input['X'], model_input['q_c'], model_input['V_c'], model_input['CL']
     ]
     sol_iv_one_compartment = scipy.integrate.solve_ivp(
         fun=lambda t, y: rhs_iv_one_compartment(t, y, *args),
@@ -60,9 +77,8 @@ def iv_one_compartment(V_c, CL, X):
     
 # --- Two compartments --------------------------
 
-def rhs_iv_two_compartments(t, y, Q_p1, V_c, V_p1, CL, X): 
-    # add dose function as an argument
-    # pass in dictionary and call by keys
+def rhs_iv_two_compartments(t, y, model_input): 
+
     '''Defines a two-compartment IV model (main and peripheral compartments).
     
     Parameters
@@ -89,20 +105,21 @@ def rhs_iv_two_compartments(t, y, Q_p1, V_c, V_p1, CL, X):
         compartment over time, d(q_p1)/dt.
     '''
     q_c, q_p1 = y
-    transition = Q_p1 * (q_c / V_c - q_p1 / V_p1)
-    dqc_dt = dose(t, X) - q_c / V_c * CL - transition
+    transition = model_input['Q_p1'] * q_c/model_input['V_c'] - q_p1/model_input['V_p1']
+    dqc_dt = dose(t, model_input['X']) - q_c/model_input['V_c']*model_input['CL'] - transition
     dqp1_dt = transition
     
     return [dqc_dt, dqp1_dt]
 
-def iv_two_compartments(model_args, t_eval, y0):
+def iv_two_compartments(t_eval, y0, model_input):
     '''Solves the differential equations of a two-compartment IV dosing model (as 
     described in rhs_iv_two_compartments) using scipy.integrate.solve_ivp.
     
     Parameters
     ----------
-    model_args : dict
-        `model_args` is a dictionary containing the following: ### 
+    model_input : dict
+        `model_input` is a dictionary containing the following: 
+
     t_eval : array
         `t_eval` is an array containing the timespan over which to 
         evaluate the differential equations.
@@ -112,14 +129,14 @@ def iv_two_compartments(model_args, t_eval, y0):
 
     Return
     ----------
-    sol_iv_two_compartments : ###
+    sol_iv_two_compartments : 
     '''
     
-    args = [
-        model_args['Q_p1'], model_args['V_c'], model_args['V_p1'], model_args['CL'], model_args['X']
-    ]
+    # args = [
+    #     model_input['Q_p1'], model_input['V_c'], model_input['V_p1'], model_input['CL'], model_input['X']
+    # ]
     sol_iv_two_compartments = scipy.integrate.solve_ivp(
-        fun=lambda t, y: rhs_iv_two_compartments(t, y, *args),
+        fun=lambda t, y: rhs_iv_two_compartments(t, y, model_input),
         t_span=[t_eval[0], t_eval[-1]],
         y0=y0, t_eval=t_eval
     )
@@ -153,9 +170,18 @@ def rhs_subcutaneous(k_a, Q_p1, V_c, V_p1, CL, X):
     ----------
 
     '''
-    pass
+    q_0, q_c, q_p1 = y
+    
+    transition = Q_p1 * (q_c / V_c - q_p1 / V_p1)
+    
+    dq0_dt = dose(t, X) - k_a * q_0
+    dqc_dt = k_a * q_0 - q_c / V_c * CL - transition
+    dqp1_dt = transition
 
-def subcutaneous(model_args, t_eval, y0):
+    return [dq0_dt, dqc_dt, dqp1_dt]
+
+
+def subcutaneous(model_input, t_eval, y0):
     '''Solves the differential equations involved in subcutaneous dosing
     (as described in rhs_subcutaneous) using scipy.integrate.solve_ivp.
 
@@ -176,8 +202,8 @@ def subcutaneous(model_args, t_eval, y0):
     
     '''
     args = [
-        model_args['Q_p1'], model_args['V_c'], model_args['V_p1'], 
-        model_args['CL'], model_args['X']
+        model_input['k_a'], model_input['Q_p1'], model_input['V_c'], model_input['V_p1'], 
+        model_input['CL'], model_input['X']
     ]
     sol_subcutaneous = scipy.integrate.solve_ivp(
         fun=lambda t, y: rhs_subcutaneous(t, y, *args),
@@ -188,3 +214,27 @@ def subcutaneous(model_args, t_eval, y0):
     return sol_subcutaneous
 
 
+# -----------------------------
+
+t_eval = np.linspace(0, 1, 1000)
+y0 = np.array([0.0, 0.0])
+model_input = {
+    'name': 'test for output',
+    'Q_p1': 2.0,
+    'V_c': 1.0,
+    'V_p1': 1.0,
+    'CL': 1.0,
+    'X': 1.0,
+}
+
+fig = plt.figure()
+sol = iv_two_compartments(t_eval, y0, model_input)
+
+
+plt.plot(sol.t, sol.y[0, :], label=model_input['name'] + '- q_c')
+plt.plot(sol.t, sol.y[1, :], label=model_input['name'] + '- q_p1')
+
+plt.legend()
+plt.ylabel('drug mass [ng]')
+plt.xlabel('time [h]')
+plt.show()
