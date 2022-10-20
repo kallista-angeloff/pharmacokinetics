@@ -80,7 +80,7 @@ def shape_of_dosis():
     ------
     shape: bool, True for spikes, False for continuous
     """
-    print('Should a contnuous dosis be used or a spiked dosis?')
+    print('Should a contnuous dosis be used?')
     answer = input('y/n?')
     if answer == 'y':
         shape = 1
@@ -143,20 +143,26 @@ def create_dosis_function(t, shape, no_spikes, strength):
     epsilon = dt/100
     times = np.arange(no_spikes)*dt
 
-    def dosis(t):
-        if t < times[0]:
-            t = 0
-        elif t > times[-1]:
-            t = 0
-        elif (t > times[-1]) and (t <= times[-1]+epsilon):
-            t = 1
-        else:
-            for it in range(0, no_spikes-1):
-                if t > times[it] and (t <= times[it]+epsilon):
-                    t = 1
-                elif (t > times[it]+epsilon) and (t < times[it+1]):
-                    t = 0
-        return t * strength
+    if shape:
+
+        def dosis(t):
+            return strength
+    else:
+
+        def dosis(t):
+            if t < times[0]:
+                t = 0
+            elif t > times[-1]:
+                t = 0
+            elif (t > times[-1]) and (t <= times[-1]+epsilon):
+                t = 1
+            else:
+                for it in range(0, no_spikes-1):
+                    if t > times[it] and (t <= times[it]+epsilon):
+                        t = 1
+                    elif (t > times[it]+epsilon) and (t < times[it+1]):
+                        t = 0
+            return t * strength
 
     return dosis
 
