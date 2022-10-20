@@ -1,7 +1,5 @@
-from venv import create
-import numpy as np
 import scipy.integrate
-from protocol import *
+import pkmodel as pk
 
 
 def rhs_iv_one_compartment(t, y, model_input):
@@ -30,9 +28,11 @@ def rhs_iv_one_compartment(t, y, model_input):
     '''
 
     q_c = y
-    dose = create_dosis_function(model_input['dose_shape'], model_input['dose_spikes'], model_input['dose_strength'])
+    dose = pk.create_dosis_function(model_input['dose_shape'], 
+                                    model_input['dose_spikes'], 
+                                    model_input['dose_strength'])
     dqc_dt = dose(t) - q_c/model_input['V_c'] * model_input['CL']
-    return dqc_dt
+    return [dqc_dt, dose]
 
 
 def iv_one_compartment(t_eval, y0, model_input):
@@ -90,8 +90,6 @@ def rhs_iv_two_compartments(t, y, model_input):
         `V_p1` is the volume in mL of the peripheral compartment.
     CL: float
         `CL` is the clearance rate in mL/hr of the main compartment.
-    X : float
-        `X` is the dose in ng of the drug.
 
     Return
     ----------
@@ -112,7 +110,7 @@ def rhs_iv_two_compartments(t, y, model_input):
     dqc_dt = dose(t) - q_c/model_input['V_c']*model_input['CL'] - transition
     dqp1_dt = transition
 
-    return [dqc_dt, dqp1_dt]
+    return [dqc_dt, dqp1_dt, dose]
 
 
 def iv_two_compartments(t_eval, y0, model_input):
@@ -168,8 +166,6 @@ def rhs_subcutaneous(t, y, model_input):
         `V_p1` is the volume in mL of the peripheral compartment.
     CL: float
         `CL` is the clearance rate in mL/hr of the main compartment.
-    X : float
-        `X` is the dose in ng of the drug.
 
     Return
     ----------
@@ -180,11 +176,11 @@ def rhs_subcutaneous(t, y, model_input):
     dose = create_dosis_function(model_input['dose_shape'],
                                  model_input['dose_spikes'],
                                  model_input['dose_strength'])
-    dq0_dt = dose(t, model_input['X']) - model_input['k_a'] * q_0
+    dq0_dt = dose(t) - model_input['k_a'] * q_0
     dqc_dt = model_input['k_a']*q_0 - q_c/model_input['V_c']*model_input['CL'] - transition
     dqp1_dt = transition
 
-    return [dq0_dt, dqc_dt, dqp1_dt]
+    return [dq0_dt, dqc_dt, dqp1_dt, dose]
 
 
 def subcutaneous(t_eval, y0, model_input):
