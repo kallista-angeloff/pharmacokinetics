@@ -7,11 +7,12 @@ import os
 from datetime import datetime
 import matplotlib.pyplot as plt
 
+
 def solution(model_sol, *args):
-    """ 
+    """
     Function that plots the results from the model and allows
     the user to compare results between different models.
-    
+
     Uses the plot_drug function to plot the individual plots.
 
     Inputs
@@ -28,18 +29,20 @@ def solution(model_sol, *args):
     Outputs
     -------
     """
-    
+
     # check inputs
     for model in [model_sol, *args]:
         if not isinstance(model_sol, dict):
-            raise TypeError('Model data output for plotting must be a dictionary')
-    
+            raise TypeError('Model data output for plotting \
+                            must be a dictionary')
+
     # create subplot
-    fig, (ax_0,ax_1) = plt.subplots(2, 1 , gridspec_kw={'height_ratios': [3, 1]})
+    fig, (ax_0, ax_1) = plt.subplots(2, 1,
+                                     gridspec_kw={'height_ratios': [3, 1]})
     for model in [model_sol, *args]:    # calls plot_drug function
         plot_drug(model, fig)
-    
-     # adding visualisation elements
+
+    # adding visualisation elements
     ax_0.legend()
     ax_1.legend()
     fig.suptitle('Pharmacokinetic Model')
@@ -48,11 +51,14 @@ def solution(model_sol, *args):
     ax_1.set_xlabel('time [h]')
     ax_0.set_xticks([])
     fig.subplots_adjust(hspace=0)
-    
+
     # saving graph under ~/data
-    if not os.path.exists(os.getcwd() + '/data/'):    # creating /data folder if it does not exist
-        os.mkdir(os.getcwd() + '/data/')   
-    fig.savefig(os.getcwd() + '/data/model' + datetime.today().strftime('%Y%m%d%H%M%S') + '.png')
+    # creating /data folder if it does not exist
+    if not os.path.exists(os.getcwd() + '/data/'):
+        os.mkdir(os.getcwd() + '/data/')
+    fig.savefig(os.getcwd() + '/data/model'
+                + datetime.today().strftime('%Y%m%d%H%M%S') + '.png')
+
 
 def plot_drug(model, fig):
     """
@@ -63,7 +69,7 @@ def plot_drug(model, fig):
     Inputs
     ------
     model (dict): The model results that are to be plotted by the function
-    
+
     fig (figure, 2 axes): The figure that the data will be plotted on
 
     Outputs
@@ -78,13 +84,16 @@ def plot_drug(model, fig):
     if not isinstance(fig, plt.Figure) or len(fig.axes) != 2:
         raise ValueError('Second argument must be a figure with 2 axes')
 
-    # plots the drug concentration for each compartment 
+    # plots the drug concentration for each compartment
     comp_label = ['Central', 'Peripheral1', 'Peripheral2']
     for comp, _ in enumerate(model.y):
-        fig.axes[0].plot(model.t, model.y[comp], label = model.name + ' ' + comp_label[comp])
+        fig.axes[0].plot(model.t, model.y[comp], label=model.name
+                         + ' ' + comp_label[comp])
     if 'dose_comp' in model.keys():
-        fig.axes[0].plot(model.t, model.dose_comp, label = model.name + ' dose_comp')
-    fig.axes[1].plot(model.t, model.dose, label = model.name)  # plots drug dosage
-    
+        fig.axes[0].plot(model.t, model.dose_comp, label=model.name
+                         + ' dose_comp')
+    # plots drug dosage
+    fig.axes[1].plot(model.t, model.dose, label=model.name)
+
     return fig
 
