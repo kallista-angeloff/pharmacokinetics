@@ -4,6 +4,7 @@
 
 # Packages
 import os
+from datetime import datetime
 import matplotlib.pyplot as plt
 
 def solution(model_sol, *args):
@@ -49,9 +50,9 @@ def solution(model_sol, *args):
     fig.subplots_adjust(hspace=0)
     
     # saving graph under ~/data
-    if not os.path.exists(os.getcwd()+'/data/'):    # creating /data folder if it does not exist
-        os.mkdir(os.getcwd()+'/data/')   
-    fig.savefig(os.getcwd()+'/data/model.png')
+    if not os.path.exists(os.getcwd() + '/data/'):    # creating /data folder if it does not exist
+        os.mkdir(os.getcwd() + '/data/')   
+    fig.savefig(os.getcwd() + '/data/model' + datetime.today().strftime('%Y%m%d%H%M%S') + '.png')
 
 def plot_drug(model, fig):
     """
