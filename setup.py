@@ -34,12 +34,12 @@ def get_readme():
 # Go!
 setup(
     # Module name (lowercase)
-    name='pkmodel',
+    name='pkmodel-blank',
 
     # Version
     version=get_version(),
 
-    description='An example Python project.',
+    description='pkmodel is a python package for visualising simplified drug delivery methods and protocols.',
 
     long_description=get_readme(),
 
@@ -49,14 +49,14 @@ setup(
 
     # author_email='',
 
-    maintainer='Martin Robinson',
+    maintainer='Kallista Angeloff',
 
-    maintainer_email='martin.robinson@cs.ox.ac.uk',
+    maintainer_email='kallista.angeloff@env-res.ox.ac.uk',
 
-    url='https://github.com/SABS-R3/2020-software-engineering-projects-pk',
+    url='https://github.com/kallista-angeloff/pharmacokinetics',
 
     # Packages to include
-    packages=find_packages(include=('pkmodel', 'pkmodel.*')),
+    packages=find_packages(include=('pkmodel-blank', 'pkmodel-blank.*')),
 
     # List of dependencies
     install_requires=[
