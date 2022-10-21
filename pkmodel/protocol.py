@@ -108,6 +108,7 @@ def create_dosis_function(t, shape, no_spikes, strength):
     -----
     t: array, time steps
     shape: bool, whether we have a continuous dosis
+    no_spikes: int, number of dosis for instantaneous input
     strength: float, strength of the dosis
 
     Output
