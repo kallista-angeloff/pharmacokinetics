@@ -2,15 +2,10 @@ import matplotlib.pylab as plt
 import numpy as np
 import scipy.integrate
 
+import pkmodel as pk
 
-<<<<<<< HEAD
-def dose(t, X):
-    return X
 
-def rhs_iv_one_compartment(t, y, model_input): 
-=======
 def rhs_iv_one_compartment(t, y, model_input, t_eval):
->>>>>>> a3c154dd988f913a31001b77e2b1cfb863060ce1
     '''Defines a one-compartment IV model.
     
     Parameters
@@ -48,10 +43,6 @@ def rhs_iv_one_compartment(t, y, model_input, t_eval):
     '''
     
     q_c = y
-<<<<<<< HEAD
-    dqc_dt = dose(t, model_input['X']) - q_c/model_input['V_c'] * model_input['CL']
-    return dqc_dt
-=======
     dose = pk.create_dosis_function(t_eval,
                                     model_input['dose_shape'], 
                                     model_input['dose_spikes'], 
@@ -60,7 +51,6 @@ def rhs_iv_one_compartment(t, y, model_input, t_eval):
     dqc_dt = dose(t) - q_c/model_input['V_c'] * model_input['CL']
     return [dqc_dt]
 
->>>>>>> a3c154dd988f913a31001b77e2b1cfb863060ce1
 
 def iv_one_compartment(t_eval, y0, model_input):
     '''Solves the differential equations of a one-compartment IV dosing model (as 
@@ -111,12 +101,8 @@ def iv_one_compartment(t_eval, y0, model_input):
     
 # --- Two compartments --------------------------
 
-def rhs_iv_two_compartments(t, y, model_input): 
+def rhs_iv_two_compartments(t, y, model_input, t_eval): 
 
-<<<<<<< HEAD
-=======
-def rhs_iv_two_compartments(t, y, model_input, t_eval):
->>>>>>> a3c154dd988f913a31001b77e2b1cfb863060ce1
     '''Defines a two-compartment IV model (main and peripheral compartments).
     
     Parameters
@@ -160,12 +146,6 @@ def rhs_iv_two_compartments(t, y, model_input, t_eval):
     q_c, q_p1 = y
     
     transition = model_input['Q_p1'] * q_c/model_input['V_c'] - q_p1/model_input['V_p1']
-<<<<<<< HEAD
-    dqc_dt = dose(t, model_input['X']) - q_c/model_input['V_c']*model_input['CL'] - transition
-    dqp1_dt = transition
-    
-    return [dqc_dt, dqp1_dt]
-=======
 
     dose = pk.create_dosis_function(t_eval,
                                  model_input['dose_shape'],
@@ -176,7 +156,6 @@ def rhs_iv_two_compartments(t, y, model_input, t_eval):
 
     return [dqc_dt, dqp1_dt]
 
->>>>>>> a3c154dd988f913a31001b77e2b1cfb863060ce1
 
 def iv_two_compartments(t_eval, y0, model_input):
     '''Solves the differential equations of a two-compartment IV dosing model (as 
@@ -227,13 +206,8 @@ def iv_two_compartments(t_eval, y0, model_input):
 
 # --- Subcutaneous ------------------------------
 
-<<<<<<< HEAD
-def rhs_subcutaneous(t, y, model_input):
-    '''Defines a subcutaneous injection delivery model with an initial 
-=======
 def rhs_subcutaneous(t, y, model_input, t_eval):
     '''Defines a subcutaneous injection delivery model with an initial    
->>>>>>> a3c154dd988f913a31001b77e2b1cfb863060ce1
     dosing compartment and an additional peripheral compartment.
 
     Parameters
@@ -279,24 +253,15 @@ def rhs_subcutaneous(t, y, model_input, t_eval):
     q_0, q_c, q_p1 = y
     
     transition = model_input['Q_p1'] * q_c/model_input['V_c'] - q_p1/model_input['V_p1']
-<<<<<<< HEAD
-    
-    dq0_dt = dose(t, model_input['X']) - model_input['k_a'] * q_0
-=======
     dose = pk.create_dosis_function(t_eval,
                                  model_input['dose_shape'],
                                  model_input['dose_spikes'],
                                  model_input['dose_strength'])
     dq0_dt = dose(t) - model_input['k_a'] * q_0
->>>>>>> a3c154dd988f913a31001b77e2b1cfb863060ce1
     dqc_dt = model_input['k_a']*q_0 - q_c/model_input['V_c']*model_input['CL'] - transition
     dqp1_dt = transition
 
     return [dq0_dt, dqc_dt, dqp1_dt]
-<<<<<<< HEAD
-=======
-
->>>>>>> a3c154dd988f913a31001b77e2b1cfb863060ce1
 
 def subcutaneous(t_eval, y0, model_input):
     '''Solves the differential equations involved in subcutaneous dosing
@@ -343,13 +308,10 @@ def subcutaneous(t_eval, y0, model_input):
         t_span=[t_eval[0], t_eval[-1]],
         y0=y0, t_eval=t_eval
     )
-<<<<<<< HEAD
-=======
 
     sol_subcutaneous.dose_comp = sol_subcutaneous.y[0]
     sol_subcutaneous.y = sol_subcutaneous.y[1:]
     
->>>>>>> a3c154dd988f913a31001b77e2b1cfb863060ce1
     print(sol_subcutaneous.message)
     return sol_subcutaneous
 
