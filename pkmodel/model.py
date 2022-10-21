@@ -45,7 +45,6 @@ def rhs_iv_one_compartment(t, y, model_input, t_eval):
                                     model_input['dose_shape'], 
                                     model_input['dose_spikes'], 
                                     model_input['dose_strength'])
-    print(dose(t))
     dqc_dt = dose(t) - q_c/model_input['V_c'] * model_input['CL']
     return [dqc_dt]
 

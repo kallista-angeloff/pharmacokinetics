@@ -41,9 +41,9 @@ def solution(model_sol, *args):
      # adding visualisation elements
     ax_0.legend()
     ax_1.legend()
-    fig.suptitle('Drug amount in different systems')
-    ax_0.set_ylabel('compartment drug amoount [ng]')
-    ax_1.set_ylabel('drug dosage amount [ng]')
+    fig.suptitle('Pharmacokinetic Model')
+    ax_0.set_ylabel('drug in compartment [ng]')
+    ax_1.set_ylabel('dosage [ng]')
     ax_1.set_xlabel('time [h]')
     ax_0.set_xticks([])
     fig.subplots_adjust(hspace=0)
