@@ -3,7 +3,6 @@
 #
 
 # Packages
-import numpy as np
 import matplotlib.pyplot as plt
 
 def solution(model_sol, *args):
@@ -73,9 +72,10 @@ def plot_drug(model, f):
         raise ValueError('Second argument must be a figure with 2 axes')
 
     # plots the drug concentration for each compartment 
-    for comp in model.y:
-        f.axes[0].plot(model.t, comp)
-    f.axes[1].plot(model.t, model.dose)  # plots drug dosage
+    comp_label = ['Central', 'Peripheral1', 'Peripheral2']
+    for comp in range(len(model.y)):
+        f.axes[0].plot(model.t, model.y[comp], label = model.name + comp_label[comp])
+    f.axes[1].plot(model.t, model.dose, label = model.name)  # plots drug dosage
 
     return f
 

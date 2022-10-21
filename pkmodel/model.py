@@ -32,7 +32,7 @@ def rhs_iv_one_compartment(t, y, model_input):
                                     model_input['dose_spikes'], 
                                     model_input['dose_strength'])
     dqc_dt = dose(t) - q_c/model_input['V_c'] * model_input['CL']
-    return [dqc_dt, dose]
+    return [dqc_dt]
 
 
 def iv_one_compartment(t_eval, y0, model_input):
@@ -104,13 +104,13 @@ def rhs_iv_two_compartments(t, y, model_input):
     q_c, q_p1 = y
     transition = model_input['Q_p1'] * q_c/model_input['V_c'] - q_p1/model_input['V_p1']
 
-    dose = create_dosis_function(model_input['dose_shape'],
+    dose = pk.create_dosis_function(model_input['dose_shape'],
                                  model_input['dose_spikes'],
                                  model_input['dose_strength'])
     dqc_dt = dose(t) - q_c/model_input['V_c']*model_input['CL'] - transition
     dqp1_dt = transition
 
-    return [dqc_dt, dqp1_dt, dose]
+    return [dqc_dt, dqp1_dt]
 
 
 def iv_two_compartments(t_eval, y0, model_input):
@@ -173,14 +173,14 @@ def rhs_subcutaneous(t, y, model_input):
     '''
     q_0, q_c, q_p1 = y
     transition = model_input['Q_p1'] * q_c/model_input['V_c'] - q_p1/model_input['V_p1']
-    dose = create_dosis_function(model_input['dose_shape'],
+    dose = pk.create_dosis_function(model_input['dose_shape'],
                                  model_input['dose_spikes'],
                                  model_input['dose_strength'])
     dq0_dt = dose(t) - model_input['k_a'] * q_0
     dqc_dt = model_input['k_a']*q_0 - q_c/model_input['V_c']*model_input['CL'] - transition
     dqp1_dt = transition
 
-    return [dq0_dt, dqc_dt, dqp1_dt, dose]
+    return [dq0_dt, dqc_dt, dqp1_dt]
 
 
 def subcutaneous(t_eval, y0, model_input):
