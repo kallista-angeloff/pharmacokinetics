@@ -213,5 +213,5 @@ def subcutaneous(t_eval, y0, model_input):
         t_span=[t_eval[0], t_eval[-1]],
         y0=y0, t_eval=t_eval
     )
-    print(subcutaneous.message)
+    print(sol_subcutaneous.message)
     return sol_subcutaneous

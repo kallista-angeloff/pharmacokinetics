@@ -4,6 +4,7 @@
 
 # Packages
 import matplotlib.pyplot as plt
+import os
 
 def solution(model_sol, *args):
     """ 
@@ -45,7 +46,11 @@ def solution(model_sol, *args):
     a1.set_xlabel('time [h]')
     a0.set_xticks([])
     f.subplots_adjust(hspace=0)
-    f.show()
+    
+    # saving graph under ~/data
+    if not os.path.exists(os.getcwd()+'/data/'):    # creating /data folder if it does not exist
+        os.mkdir(os.getcwd()+'/data/')    
+    f.savefig(os.getcwd()+'/data/model.png')
 
 def plot_drug(model, f):
     """

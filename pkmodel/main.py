@@ -1,5 +1,4 @@
 #install packages
-import matplotlib.pylab as plt
 import numpy as np
 import pkmodel as pk
 
