@@ -50,7 +50,7 @@ def solution(model_sol, *args):
     
     # saving graph under ~/data
     if not os.path.exists(os.getcwd()+'/data/'):    # creating /data folder if it does not exist
-        os.mkdir(os.getcwd()+'/data/')    
+        os.mkdir(os.getcwd()+'/data/')   
     fig.savefig(os.getcwd()+'/data/model.png')
 
 def plot_drug(model, fig):

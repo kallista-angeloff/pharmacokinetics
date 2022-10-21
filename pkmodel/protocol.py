@@ -117,7 +117,7 @@ def create_dosis_function(t, shape, no_spikes, strength):
     """
 
     dt = (t[-1]-t[0])/no_spikes  # time difference between spikes
-    epsilon = dt/100  # width of spike (in time)
+    epsilon = t[1]-t[0]  # width of spike (in time)
     times = np.arange(no_spikes)*dt
 
     if shape:

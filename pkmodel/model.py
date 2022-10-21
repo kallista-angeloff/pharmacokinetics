@@ -1,5 +1,3 @@
-import matplotlib.pylab as plt
-import numpy as np
 import scipy.integrate
 
 import pkmodel as pk
@@ -94,7 +92,7 @@ def iv_one_compartment(t_eval, y0, model_input):
     sol_iv_one_compartment = scipy.integrate.solve_ivp(
         fun=lambda t, y: rhs_iv_one_compartment(t, y, model_input, t_eval),
         t_span=[t_eval[0], t_eval[-1]],
-        y0=y0, t_eval=t_eval
+        y0=y0, t_eval=t_eval, max_step = t_eval[1] - t_eval[0]
     )
     print(sol_iv_one_compartment.message) # test
     return sol_iv_one_compartment
@@ -199,7 +197,7 @@ def iv_two_compartments(t_eval, y0, model_input):
     sol_iv_two_compartments = scipy.integrate.solve_ivp(
         fun=lambda t, y: rhs_iv_two_compartments(t, y, model_input, t_eval),
         t_span=[t_eval[0], t_eval[-1]],
-        y0=y0, t_eval=t_eval
+        y0=y0, t_eval=t_eval, max_step = t_eval[1] - t_eval[0]
     )
     print(sol_iv_two_compartments.message)
     return sol_iv_two_compartments
@@ -306,7 +304,7 @@ def subcutaneous(t_eval, y0, model_input):
     sol_subcutaneous = scipy.integrate.solve_ivp(
         fun=lambda t, y: rhs_subcutaneous(t, y, model_input, t_eval),
         t_span=[t_eval[0], t_eval[-1]],
-        y0=y0, t_eval=t_eval
+        y0=y0, t_eval=t_eval, max_step = t_eval[1] - t_eval[0]
     )
 
     sol_subcutaneous.dose_comp = sol_subcutaneous.y[0]
