@@ -16,8 +16,8 @@ def type_of_dosis():
     dosis_comp: bool, is a dosis compartment used?
     """
 
-    print('Should a dosis compartment be used?')
-    answer = input('y/n?')
+    print('Should a dosing compartment be used? ')
+    answer = input('y/n? ')
     if answer not in ['y', 'n']:
         raise TypeError('Answer needs to be y or n.')
     dosis_comp = (answer == 'y')  # convert input into boolean,
@@ -37,8 +37,8 @@ def number_of_compartments():
     no_comps: int, number of compartments
     """
 
-    print('How many compartments including the central one should there be?')
-    no_comps = int(input('Enter an integer between 1 and 3'))
+    print('How many compartments including the central one should there be? ')
+    no_comps = int(input('Enter an integer between 1 and 3. '))
     if (type(no_comps) != int) or (no_comps < 1) or (no_comps > 3):
         raise TypeError('Input needs to be an integer between 1 and 3.')
 
@@ -56,8 +56,8 @@ def shape_of_dosis():
     ------
     shape: bool, True for spikes, False for continuous
     """
-    print('Should a contnuous dosis be used?')
-    answer = input('y/n?')
+    print('Should a continous dosis be used? ')
+    answer = input('y/n? ')
     if answer == 'y':
         shape = 1
     elif answer == 'n':
@@ -79,8 +79,8 @@ def number_of_spikes(shape):
     ------
     no_spikes: int, number of spikes in dosis
     """
-    print('How many spikes should there be in the dosage?')
-    no_spikes = int(input('Enter an integer between 1 and 10.'))
+    print('How many spikes should there be in the dosis? ')
+    no_spikes = int(input('Enter an integer between 1 and 10. '))
     return no_spikes
 
 
@@ -95,8 +95,8 @@ def dosage():
     ------
     dose: float, dose in ng
     """
-    print('What should the amount of dosis be in ng?')
-    dose = float(input('Type a number larger than 0.'))
+    print('What should the amount of dosis be in ng? ')
+    dose = float(input('Type a number larger than 0. '))
     return dose
 
 

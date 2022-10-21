@@ -27,13 +27,13 @@ sol = [None] * no_models    # a list where each element stores the output of eac
 
 # determining which type of model to run and running it
 for m in range(no_models):
-    if m_type[m]['dose_comp']:  # runs 1-comparment m with subcutaneous dosing
+    if m_type[m]['dose_comp']:  # runs 1-compartment m with subcutaneous dosing
         y0 = np.array([0.0, 0.0, 0.0])
         sol[m] = pk.subcutaneous(t_eval, y0, m_input[m])
-    elif m_type[m]['no_comp'] == 2: # runs 2-comparment model with continuous dosing
+    elif m_type[m]['no_comp'] == 2: # runs 2-compartment model with continuous dosing
         y0 = np.array([0.0, 0.0])
         sol[m] = pk.iv_two_compartments(t_eval, y0, m_input[m])
-    else:   # runs 1-comparment model with continuous dosing
+    else:   # runs 1-compartment model with continuous dosing
         y0 = np.array([0.0])
         sol[m] = pk.iv_one_compartment(t_eval, y0, m_input[m])
     
