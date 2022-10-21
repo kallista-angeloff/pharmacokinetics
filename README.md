@@ -22,7 +22,7 @@ Each model can be run with a custom dosing protocol.
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install Pharmacokinetics.
 
 ```bash
-pip install pharmacokinetics
+pip install pkmodel
 ```
 ## Usage
 
