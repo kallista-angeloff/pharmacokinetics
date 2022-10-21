@@ -44,6 +44,7 @@ def number_of_compartments():
 
     return no_comps
 
+
 def shape_of_dosis():
     """Function in which the user can set whether the dose is given in one spike
     or as a continuous dosis
@@ -141,6 +142,7 @@ def create_dosis_function(t, shape, no_spikes, strength):
             return t * strength
 
     return dosis
+
 
 def set_model_args():
     """Function to set the model arguments like

@@ -1,14 +1,10 @@
-import unittest
-import pkmodel as pk
+import numpy.testing as npt
+import pytest
 
-
-class ProtocolTest(unittest.TestCase):
-    """
-    Tests the :class:`Protocol` class.
-    """
-    def test_create(self):
-        """
-        Tests Protocol creation.
-        """
-        model = pk.Protocol()
-        self.assertEqual(model.value, 43)
+@pytest.mark.parameterize(
+    'test expected',
+    [
+        ('')
+    ]
+)
+def test_type_of_dosis():
