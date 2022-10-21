@@ -37,7 +37,8 @@ for m in range(no_models):
         y0 = np.array([0.0])
         sol[m] = pk.iv_one_compartment(t_eval, y0, m_input[m])
     
-    dose_func = pk.create_dosis_function(m_input[m]['dose_shape'],
+    dose_func = pk.create_dosis_function(t_eval,
+                                    m_input[m]['dose_shape'],
                                     m_input[m]['dose_spikes'],
                                     m_input[m]['dose_strength'])
     sol[m].dose = []

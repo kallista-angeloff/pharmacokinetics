@@ -2,7 +2,7 @@ import scipy.integrate
 import pkmodel as pk
 
 
-def rhs_iv_one_compartment(t, y, model_input):
+def rhs_iv_one_compartment(t, y, model_input, t_eval):
     '''Defines a one-compartment IV model.
 
     Parameters
@@ -28,9 +28,11 @@ def rhs_iv_one_compartment(t, y, model_input):
     '''
 
     q_c = y
-    dose = pk.create_dosis_function(model_input['dose_shape'], 
+    dose = pk.create_dosis_function(t_eval,
+                                    model_input['dose_shape'], 
                                     model_input['dose_spikes'], 
                                     model_input['dose_strength'])
+    print(dose(t))
     dqc_dt = dose(t) - q_c/model_input['V_c'] * model_input['CL']
     return [dqc_dt]
 
@@ -66,7 +68,7 @@ def iv_one_compartment(t_eval, y0, model_input):
     '''
 
     sol_iv_one_compartment = scipy.integrate.solve_ivp(
-        fun=lambda t, y: rhs_iv_one_compartment(t, y, model_input),
+        fun=lambda t, y: rhs_iv_one_compartment(t, y, model_input, t_eval),
         t_span=[t_eval[0], t_eval[-1]],
         y0=y0, t_eval=t_eval
     )
@@ -76,7 +78,7 @@ def iv_one_compartment(t_eval, y0, model_input):
 # --- Two compartments --------------------------
 
 
-def rhs_iv_two_compartments(t, y, model_input):
+def rhs_iv_two_compartments(t, y, model_input, t_eval):
     '''Defines a two-compartment IV model (main and peripheral compartments).
 
     Parameters
@@ -104,7 +106,8 @@ def rhs_iv_two_compartments(t, y, model_input):
     q_c, q_p1 = y
     transition = model_input['Q_p1'] * q_c/model_input['V_c'] - q_p1/model_input['V_p1']
 
-    dose = pk.create_dosis_function(model_input['dose_shape'],
+    dose = pk.create_dosis_function(t_eval,
+                                 model_input['dose_shape'],
                                  model_input['dose_spikes'],
                                  model_input['dose_strength'])
     dqc_dt = dose(t) - q_c/model_input['V_c']*model_input['CL'] - transition
@@ -139,7 +142,7 @@ def iv_two_compartments(t_eval, y0, model_input):
     '''
 
     sol_iv_two_compartments = scipy.integrate.solve_ivp(
-        fun=lambda t, y: rhs_iv_two_compartments(t, y, model_input),
+        fun=lambda t, y: rhs_iv_two_compartments(t, y, model_input, t_eval),
         t_span=[t_eval[0], t_eval[-1]],
         y0=y0, t_eval=t_eval
     )
@@ -148,7 +151,7 @@ def iv_two_compartments(t_eval, y0, model_input):
 
 # --- Subcutaneous ------------------------------
 
-def rhs_subcutaneous(t, y, model_input):
+def rhs_subcutaneous(t, y, model_input, t_eval):
     '''Defines a subcutaneous injection delivery model with an initial    
     dosing compartment and an additional peripheral compartment.
 
@@ -173,7 +176,8 @@ def rhs_subcutaneous(t, y, model_input):
     '''
     q_0, q_c, q_p1 = y
     transition = model_input['Q_p1'] * q_c/model_input['V_c'] - q_p1/model_input['V_p1']
-    dose = pk.create_dosis_function(model_input['dose_shape'],
+    dose = pk.create_dosis_function(t_eval,
+                                 model_input['dose_shape'],
                                  model_input['dose_spikes'],
                                  model_input['dose_strength'])
     dq0_dt = dose(t) - model_input['k_a'] * q_0
@@ -209,7 +213,7 @@ def subcutaneous(t_eval, y0, model_input):
     '''
 
     sol_subcutaneous = scipy.integrate.solve_ivp(
-        fun=lambda t, y: rhs_subcutaneous(t, y, model_input),
+        fun=lambda t, y: rhs_subcutaneous(t, y, model_input, t_eval),
         t_span=[t_eval[0], t_eval[-1]],
         y0=y0, t_eval=t_eval
     )

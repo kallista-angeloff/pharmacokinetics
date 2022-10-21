@@ -100,7 +100,7 @@ def dosage():
     return dose
 
 
-def create_dosis_function(shape, no_spikes, strength):
+def create_dosis_function(t, shape, no_spikes, strength):
     """Function takes inputs about dosis and creates an array
     for the dose in time
 
@@ -115,8 +115,8 @@ def create_dosis_function(shape, no_spikes, strength):
     dosis: func, function for dosis in time
     """
 
-    dt = 100  # time difference between spikes
-    epsilon = dt/100
+    dt = (t[-1]-t[0])/no_spikes  # time difference between spikes
+    epsilon = dt/100  # width of spike (in time)
     times = np.arange(no_spikes)*dt
 
     if shape:
@@ -128,20 +128,19 @@ def create_dosis_function(shape, no_spikes, strength):
         def dosis(t):
             if t < times[0]:
                 t = 0
-            elif t > times[-1]:
+            elif t > times[-1]+epsilon:
                 t = 0
             elif (t > times[-1]) and (t <= times[-1]+epsilon):
                 t = 1
             else:
                 for it in range(0, no_spikes-1):
-                    if t > times[it] and (t <= times[it]+epsilon):
+                    if t >= times[it] and (t <= times[it]+epsilon):
                         t = 1
                     elif (t > times[it]+epsilon) and (t < times[it+1]):
                         t = 0
             return t * strength
 
     return dosis
-
 
 def set_model_args():
     """Function to set the model arguments like
