@@ -3,8 +3,8 @@
 #
 
 # Packages
-import matplotlib.pyplot as plt
 import os
+import matplotlib.pyplot as plt
 
 def solution(model_sol, *args):
     """ 
@@ -15,13 +15,13 @@ def solution(model_sol, *args):
 
     Inputs
     ------
-    model_sol (dict): The first set of model results. Should contain 2 keys 
-                      ('dose', 'solution'). The dose values shows the amount 
-                      of drug [units: ng] input with time, and the solution 
-                      values show the amount of drug in the central (element 
+    model_sol (dict): The first set of model results. Should contain 2 keys
+                      ('dose', 'solution'). The dose values shows the amount
+                      of drug [units: ng] input with time, and the solution
+                      values show the amount of drug in the central (element
                       0) and peripheral (subsequent elements) compartments.
 
-    *args: Optional arguments for more sets of model results. Should have 
+    *args: Optional arguments for more sets of model results. Should have
            same structure as model_sol.
 
     Outputs
@@ -34,35 +34,36 @@ def solution(model_sol, *args):
             raise TypeError('Model data output for plotting must be a dictionary')
     
     # create subplot
-    f, (a0,a1) = plt.subplots(2, 1 , gridspec_kw={'height_ratios': [3, 1]})
+    fig, (ax_0,ax_1) = plt.subplots(2, 1 , gridspec_kw={'height_ratios': [3, 1]})
     for model in [model_sol, *args]:    # calls plot_drug function
-        plot_drug(model, f)
+        plot_drug(model, fig)
     
      # adding visualisation elements
-    f.legend()
-    f.suptitle('Drug amount in different systems')
-    a0.set_ylabel('compartment drug amoount [ng]')
-    a1.set_ylabel('drug dosage amount [ng]')
-    a1.set_xlabel('time [h]')
-    a0.set_xticks([])
-    f.subplots_adjust(hspace=0)
+    ax_0.legend()
+    ax_1.legend()
+    fig.suptitle('Drug amount in different systems')
+    ax_0.set_ylabel('compartment drug amoount [ng]')
+    ax_1.set_ylabel('drug dosage amount [ng]')
+    ax_1.set_xlabel('time [h]')
+    ax_0.set_xticks([])
+    fig.subplots_adjust(hspace=0)
     
     # saving graph under ~/data
     if not os.path.exists(os.getcwd()+'/data/'):    # creating /data folder if it does not exist
         os.mkdir(os.getcwd()+'/data/')    
-    f.savefig(os.getcwd()+'/data/model.png')
+    fig.savefig(os.getcwd()+'/data/model.png')
 
-def plot_drug(model, f):
+def plot_drug(model, fig):
     """
     Function that plots the concentration of the drug from the central
-    compartment and also the one/two peripheral compartments (up to 
+    compartment and also the one/two peripheral compartments (up to
     the user's decision) over the time of the treatment.
 
     Inputs
     ------
-    model (dict): The model results that are to be plotted by the function 
+    model (dict): The model results that are to be plotted by the function
     
-    fig (figure, 2 axes): The figure that the data will be plotted on   
+    fig (figure, 2 axes): The figure that the data will be plotted on
 
     Outputs
     -------
@@ -73,14 +74,16 @@ def plot_drug(model, f):
     # check inputs
     if not isinstance(model, dict):
         raise TypeError('Model data output for plotting must be a dictionary')
-    if not isinstance(f, plt.Figure) or len(f.axes) != 2:
+    if not isinstance(fig, plt.Figure) or len(fig.axes) != 2:
         raise ValueError('Second argument must be a figure with 2 axes')
 
     # plots the drug concentration for each compartment 
     comp_label = ['Central', 'Peripheral1', 'Peripheral2']
-    for comp in range(len(model.y)):
-        f.axes[0].plot(model.t, model.y[comp], label = model.name + comp_label[comp])
-    f.axes[1].plot(model.t, model.dose, label = model.name)  # plots drug dosage
-
-    return f
+    for comp, _ in enumerate(model.y):
+        fig.axes[0].plot(model.t, model.y[comp], label = model.name + ' ' + comp_label[comp])
+    if 'dose_comp' in model.keys():
+        fig.axes[0].plot(model.t, model.dose_comp, label = model.name + ' dose_comp')
+    fig.axes[1].plot(model.t, model.dose, label = model.name)  # plots drug dosage
+    
+    return fig
 

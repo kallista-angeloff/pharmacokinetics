@@ -8,14 +8,17 @@ no_models = int(input('Enter a whole number: '))
 
 if not isinstance(no_models, int):
     raise TypeError('Answer needs to be a whole number.')
-m_input = [pk.set_model_args()] * no_models # Array storing model inputs that WILL be used in model.py
-m_type = [{}] * no_models   # Array storing model inputs that WILL NOT be used in model.py
+m_input = [] # Array storing model inputs that WILL be used in model.py
+m_type = [] * no_models   # Array storing model inputs that WILL NOT be used in model.py
 
 for i in range(no_models):
+    print('\n\n\n\nFOR MODEL ' + str(i) + ' ----------------------')
+    m_input.append(pk.set_model_args())
     m_input[i]['dose_shape'] = pk.shape_of_dosis()
     m_input[i]['dose_strength'] = pk.dosage()
     m_input[i]['dose_spikes'] = pk.number_of_spikes(m_input[i]['dose_shape'])
 
+    m_type.append({})
     m_type[i]['no_comp'] = pk.number_of_compartments()
     m_type[i]['dose_comp'] = pk.type_of_dosis()
 
@@ -41,7 +44,7 @@ for m in range(no_models):
     for t in t_eval:
         sol[m].dose.append(dose_func(t))
     
-    sol[m].name = 'model '+str(m)
+    sol[m].name = 'model '+ str(m)
 
 # plotting the solution
 pk.solution(*sol)

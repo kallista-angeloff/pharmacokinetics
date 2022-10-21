@@ -159,5 +159,6 @@ def set_model_args():
         'V_p1': 1.0,
         'CL': 1.0,
         'X': 1.0,
+        'k_a': 1.0
     }
     return model_args

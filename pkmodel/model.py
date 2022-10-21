@@ -213,5 +213,9 @@ def subcutaneous(t_eval, y0, model_input):
         t_span=[t_eval[0], t_eval[-1]],
         y0=y0, t_eval=t_eval
     )
+
+    sol_subcutaneous.dose_comp = sol_subcutaneous.y[0]
+    sol_subcutaneous.y = sol_subcutaneous.y[1:]
+    
     print(sol_subcutaneous.message)
     return sol_subcutaneous
