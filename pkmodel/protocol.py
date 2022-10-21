@@ -44,9 +44,10 @@ def number_of_compartments():
 
     return no_comps
 
+
 def shape_of_dosis():
-    """Function in which the user can set whether the dose is given in one spike
-    or as a continuous dosis
+    """Function in which the user can set whether the dose is given
+    in one spike or as a continuous dosis
 
     Input
     -----
@@ -116,9 +117,9 @@ def create_dosis_function(t, shape, no_spikes, strength):
     dosis: func, function for dosis in time
     """
 
-    dt = (t[-1]-t[0])/no_spikes  # time difference between spikes
-    epsilon = t[1]-t[0]  # width of spike (in time)
-    times = np.arange(no_spikes)*dt
+    dt = (t[-1] - t[0]) / no_spikes  # time difference between spikes
+    epsilon = t[1] - t[0]  # width of spike (in time)
+    times = np.arange(no_spikes) * dt
 
     if shape:
 
@@ -129,19 +130,20 @@ def create_dosis_function(t, shape, no_spikes, strength):
         def dosis(t):
             if t < times[0]:
                 t = 0
-            elif t > times[-1]+epsilon:
+            elif t > times[-1] + epsilon:
                 t = 0
-            elif (t > times[-1]) and (t <= times[-1]+epsilon):
+            elif (t > times[-1]) and (t <= times[-1] + epsilon):
                 t = 1
             else:
-                for it in range(0, no_spikes-1):
-                    if t >= times[it] and (t <= times[it]+epsilon):
+                for it in range(0, no_spikes - 1):
+                    if t >= times[it] and (t <= times[it] + epsilon):
                         t = 1
-                    elif (t > times[it]+epsilon) and (t < times[it+1]):
+                    elif (t > times[it] + epsilon) and (t < times[it + 1]):
                         t = 0
             return t * strength
 
     return dosis
+
 
 def set_model_args():
     """Function to set the model arguments like
